@@ -1,2 +1,1 @@
-#css-practice
-# css-template
+#Repository for Michelle Luo (mluo02) for Comp20
