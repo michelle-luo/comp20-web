@@ -1,6 +1,6 @@
-Comp 20 Lab 4 - Responsive Design
-Michelle Luo (mluo02)
-2.14.17
+#Comp 20 Lab 4 - Responsive Design
+##Michelle Luo (mluo02)
+##2.14.17
 
 In this lab, the sprites displayed in the browser changed based on the browser
 width. A different sprite is displayed for when width is 1400 or greater,
