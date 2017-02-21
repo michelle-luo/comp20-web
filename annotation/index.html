@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Fail</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">Fail</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/fail.mp4" id="failvideo" controls></video>
+<div id="lyrics"></div>
+
+<script>
+
+var vid = document.getElementById("failvideo");
+var lyrics = document.getElementById("lyrics");
+
+vid.addEventListener("timeupdate", function(currentTime) {
+    var time = Math.floor(this.currentTime);
+    switch (time) {
+        case 9:
+            lyrics.innerText = "You've got me feelin' emotions";
+            break;
+        case 12:
+            lyrics.innerText = "Deeper than I've ever dreamed of";
+            break;
+        case 17:
+            lyrics.innerText = "You've got me feelin' emotions";
+            break;
+        case 21:
+            lyrics.innerText = "Higher than the heavens above";
+            break;
+        case 25:
+            lyrics.innerText = "I feel good, I feel nice";
+            break;
+        case 30:
+            lyrics.innerText = "I've never felt so satisfied";
+            break;
+        case 34:
+            lyrics.innerText = "I'm in love, I'm alive";
+            break;
+        case 38:
+            lyrics.innerText = "Intoxicated, flyin' high";
+            break;
+        case 44:
+            lyrics.innerText = "Feels like a dream";
+            break;
+        case 46:
+            lyrics.innerText = "When you touch me tenderly";
+            break;
+        case 50:
+            lyrics.innerText = "I don't know if it's real";
+            break;
+        case 54:
+            lyrics.innerText = "But I like the way I feel inside";
+            break;
+        case 58:
+            lyrics.innerText = "You've got me feelin' emotions";
+            break;
+        case 62:
+            lyrics.innerText = "Deeper than I've ever dreamed of";
+            break;
+        case 66:
+            lyrics.innerText = "You've got me feelin' emotions";
+            break;
+        case 70:
+            lyrics.innerText = "Higher than the heavens above";
+            break;
+        }
+}, true);
+
+</script>
+</body>
+</html>
