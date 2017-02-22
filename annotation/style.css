@@ -1,1 +1,35 @@
- 
+/* style.css for annotation lab */
+body {
+    background-color: rgb(219, 175, 196);
+}
+
+h1, h2, h3 {
+     font-family: "Comic Sans MS", "Papyrus", sans-serif;
+     color: white;
+     text-align: center;
+     font-size: 36px;
+     font-weight: normal;
+     font-style: oblique;
+}
+
+p {
+    font-family: "Comic Sans MS", "Papyrus", sans-serif;
+    font-size: 24px;
+    color: white;
+}
+
+#vid-wrap {
+    /* video is an inline element */
+    text-align: center;
+}
+
+#failvideo {
+    margin: 0 auto;
+    padding: 10px;
+    border: 3px dotted white;
+}
+
+#lyrics {
+    margin: auto;
+    text-align: center;
+}
