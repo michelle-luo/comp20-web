@@ -17,6 +17,9 @@ function getLocation() {
         navigator.geolocation.getCurrentPosition(function(position) {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
+            document.getElementById("info-div").innerHTML =
+            "<h3>Your location</h3>" + "<p>" + lat + ", " + lng + "</p>";
+
             data = "username=TRAM96zq&lat=" + lat + "&lng=" + lng;
 
             /* using location data to make Google Maps map */
@@ -25,11 +28,13 @@ function getLocation() {
                 center: where,
                 zoom: 17
             });
+
             /* marker -- testing purposes */
             marker = new google.maps.Marker({
                 position: where,
                 map: map
             })
+
             /* send data to datastore -- which can only be done after
              * location data is retrieved */
             req.open("POST", dest, true);
@@ -41,7 +46,7 @@ function getLocation() {
 
     req.onload = function () {
         /* parse json */
-        console.log(this.responseText);
+        /* var vehicleData = this.responseText.split(?); */
     }
 
 }
