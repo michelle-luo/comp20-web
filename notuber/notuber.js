@@ -3,38 +3,34 @@
  * Michelle Luo (mluo02)
  */
 
-function displayYourLocation(lat, lng) {
-     document.getElementById("info-div").innerHTML =
-         "<h1>notuber</h1>" + "<h2>your location</h2>" + "<p>" + lat
-         + ", " + lng + "</p>" + "<hr/>";
- }
-
-function addMarkers(passenger, map, vehicles, img) {
-    var info = document.getElementById("info-div");
-
+function addVehicleMarkers(passenger, map, vehicles, img) {
     for (var i = 0, v; v = vehicles[i]; i++) {
         var pos = new google.maps.LatLng(v.lat, v.lng);
-        var marker = new google.maps.Marker({
-            position: pos,
-            icon: img,
-            map: map
-        });
-
         var dist = google.maps.geometry.spherical.computeDistanceBetween(
-                    passenger.getPosition(), marker.getPosition());
-
+                    passenger, pos);
         var contentString = '<div id="content"><h4 id="firstHeading">' +
             v._id + "</h4>" + "<h5>distance from you:</h5>" + dist +
-            "<p>" + v.lat + ", " + v.lng + "</p></div>";
+            "<p>" + pos.lat() + ", " +
+            pos.lng() + "</p></div>";
 
-        var infoWindow = new google.maps.InfoWindow({
-                    content: contentString
-        });
-
-        marker.addListener('click', function() {
-            infoWindow.open(map, this);
-        });
+        addMarker(map, pos, img, contentString);
     }
+}
+
+function addMarker(map, position, img, contentString) {
+    var marker = new google.maps.Marker({
+        position: position,
+        icon: img,
+        map: map
+    });
+
+    var info = new google.maps.InfoWindow({
+        content: contentString
+    });
+
+    marker.addListener('click', function() {
+        info.open(map, this);
+    });
 }
 
 function getLocation() {
@@ -42,9 +38,7 @@ function getLocation() {
     var dest = "https://defense-in-derpth.herokuapp.com/submit";
     var data;
     var map;
-    var where;
     var passenger;
-    var vehicle;
     var lat;
     var lng;
     var vehicles;
@@ -55,35 +49,17 @@ function getLocation() {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
 
-            displayYourLocation(lat, lng);
-
-            data = "username=" + user.username + "=" + lat + "&lng=" + lng;
-
             /* using location data to make Google Maps map */
-            where = new google.maps.LatLng(lat, lng);
+            passenger = new google.maps.LatLng(lat, lng);
             map = new google.maps.Map(document.getElementById("map"), {
-                center: where,
+                center: passenger,
                 zoom: 17
             });
-
-            /* passenger marker */
-            marker = new google.maps.Marker({
-                position: where,
-                icon: "passenger.png",
-                map: map
-            });
-
             var contentString = '<div id="content"><h4 id="firstHeading">' +
-                user.username + "</h4>" +
-                "<p>" + lat + ", " + lng + "</p></div>";
+                user.username + "</h4>" + "<p>" + lat + ", " + lng +
+                "</p></div>";
 
-            var infoWindow = new google.maps.InfoWindow({
-                        content: contentString
-            });
-
-            marker.addListener('click', function() {
-                infoWindow.open(map, this);
-            });
+            addMarker(map, passenger, "passenger.png", contentString);
 
             /* send data to datastore -- which can only be done after
              * location data is retrieved */
@@ -93,8 +69,9 @@ function getLocation() {
             req.onload = function () {
                 var res = JSON.parse(this.responseText);
                 vehicles = res.vehicles;
-                addMarkers(marker, map, vehicles, "black_car.png");
+                addVehicleMarkers(passenger, map, vehicles, "black_car.png");
             }
+            data = "username=" + user.username + "=" + lat + "&lng=" + lng;
             req.send(data);
         });
     }
@@ -102,16 +79,3 @@ function getLocation() {
         alert("Your browser doesn't support geolocation :(");
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/* end */
