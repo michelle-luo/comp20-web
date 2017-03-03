@@ -1,6 +1,41 @@
-/* comp20 a2 - js for notuber
+/*
+ * comp20 a2 - js for notuber
  * Michelle Luo (mluo02)
  */
+
+function displayYourLocation(lat, lng) {
+     document.getElementById("info-div").innerHTML =
+         "<h1>notuber</h1>" + "<h2>your location</h2>" + "<p>" + lat
+         + ", " + lng + "</p>" + "<hr/>";
+ }
+
+function addMarkers(passenger, map, vehicles, img) {
+    var info = document.getElementById("info-div");
+
+    for (var i = 0, v; v = vehicles[i]; i++) {
+        var pos = new google.maps.LatLng(v.lat, v.lng);
+        var marker = new google.maps.Marker({
+            position: pos,
+            icon: img,
+            map: map
+        });
+
+        var dist = google.maps.geometry.spherical.computeDistanceBetween(
+                    passenger.getPosition(), marker.getPosition());
+
+        var contentString = '<div id="content"><h4 id="firstHeading">' +
+            v._id + "</h4>" + "<h5>distance from you:</h5>" + dist +
+            "<p>" + v.lat + ", " + v.lng + "</p></div>";
+
+        var infoWindow = new google.maps.InfoWindow({
+                    content: contentString
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, this);
+        });
+    }
+}
 
 function getLocation() {
     var req = new XMLHttpRequest();
@@ -8,9 +43,11 @@ function getLocation() {
     var data;
     var map;
     var where;
-    var marker;
+    var passenger;
+    var vehicle;
     var lat;
     var lng;
+    var vehicles;
 
     /* getting location from HTML5 API */
     if (navigator.geolocation) {
@@ -20,7 +57,7 @@ function getLocation() {
 
             displayYourLocation(lat, lng);
 
-            data = "username=TRAM96zq&lat=" + lat + "&lng=" + lng;
+            data = "username=" + user.username + "=" + lat + "&lng=" + lng;
 
             /* using location data to make Google Maps map */
             where = new google.maps.LatLng(lat, lng);
@@ -29,55 +66,42 @@ function getLocation() {
                 zoom: 17
             });
 
-            /* marker -- testing purposes */
+            /* passenger marker */
             marker = new google.maps.Marker({
                 position: where,
+                icon: "passenger.png",
                 map: map
-            })
+            });
+
+            var contentString = '<div id="content"><h4 id="firstHeading">' +
+                user.username + "</h4>" +
+                "<p>" + lat + ", " + lng + "</p></div>";
+
+            var infoWindow = new google.maps.InfoWindow({
+                        content: contentString
+            });
+
+            marker.addListener('click', function() {
+                infoWindow.open(map, this);
+            });
 
             /* send data to datastore -- which can only be done after
              * location data is retrieved */
             req.open("POST", dest, true);
             req.setRequestHeader("Content-type",
                 "application/x-www-form-urlencoded");
+            req.onload = function () {
+                var res = JSON.parse(this.responseText);
+                vehicles = res.vehicles;
+                addMarkers(marker, map, vehicles, "black_car.png");
+            }
             req.send(data);
         });
     }
-
-    req.onload = function () {
-        /* parse json */
-        var res = JSON.parse(this.responseText);
-        displayVehicleInfo(res);
+    else {
+        alert("Your browser doesn't support geolocation :(");
     }
 }
-
-function displayYourLocation(lat, lng) {
-    document.getElementById("info-div").innerHTML =
-        "<h1>notuber</h1>" + "<h2>your location</h2>" + "<p>" + lat
-        + ", " + lng + "</p>" + "<hr/>";
-}
-
-function displayVehicleLocation(username, lat, lng) {
-    info.append("<h4>" + username + "</h4>" + "<p>" + lat + ", " + lng
-        + "</p>");
-}
-
-function displayVehicleInfo(res) {
-    var info = document.getElementById("info-div");
-    var arr1 = res;
-    info.innerHTML += "<h2>vehicles</h2>";
-
-    for (var obj in arr1) {
-        var arr2 = arr1[obj];
-        for (var vehicle in arr2) {
-            info.innerHTML += "<h4>" + arr2[vehicle].username + "</h4>"
-                + "<p>" + arr2[vehicle].lat + ", " + arr2[vehicle].lng
-                + "</p>";
-        }
-    }
-}
-
-
 
 
 
