@@ -1,6 +1,6 @@
-## comp20 a2: notuber
-# Michelle Luo (mluo02)
-# 3.6.17
+# comp20 a2: notuber
+### Michelle Luo (mluo02)
+### 3.6.17
 
 In this assignment I send a request to the server and receive a JSON containing
 vehicle data. Then using the Google Maps API, I display my own location and all
