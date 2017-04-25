@@ -18,6 +18,10 @@ function getLocation() {
     var them;
     var theirImg;
 
+    var user = {
+        username: "TRAM96zq"
+    }
+
     /* getting location from HTML5 API */
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -59,7 +63,7 @@ function getLocation() {
                 addMarker(me, myImg, map, contentString, info);
                 addVehicleMarkers(me, map, them, theirImg, info);
             }
-            data = "username=" + user.username + "=" + lat + "&lng=" + lng;
+            data = "username=" + user.username + "&lat=" + lat + "&lng=" + lng;
             req.send(data);
         });
     }
@@ -81,7 +85,7 @@ function addVehicleMarkers(me, map, them, img, info)
                     me);
         dist = dist.toFixed(4);
         contentString = '<div id="content"><h3 id="firstHeading">' +
-            v._id + "</h3>" + "<p>distance from you: " + dist + " mi</p>";
+            v.username + "</h3>" + "<p>distance from you: " + dist + " mi</p>";
         addMarker(pos, img, map, contentString, info);
     }
 }
