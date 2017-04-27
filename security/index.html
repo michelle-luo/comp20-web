@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <h1>Security Assessment of Black Car Service Server<h1>
+</head>
+<body>
+    <h3>Introduction</h3>
+    <p>The product in evaluation is a location-based ride-hailing service. I was asked to do a security evaluation on the server.</p>
+
+    <h3>Methodology</h3>
+    <p>I used cURL to test for common XSS/database injection attacks.</p>
+
+    <h3>Abstract of findings</h3>
+    <p>There were a variety of different issues: notable problems included vulnerabilities to denial-of-service attacks, leaking of private data and annoying popups.</p>
+
+    <h3>Issues found</h3>
+    <h4>Query manipulation</h4>
+    <h5>High risk</h5>
+    <p>By altering the query parameter on the /vehicle.json page, I was able to retrieve data that contained the username and location of another user that should have been kept private. <br />This is a high risk vulnerability: it compromises not only a driver's username, but also their exact physical location.</p>
+    <p>I found the problem after reading about MongoDB vulnerabilities: if a malformed query string is used, the bodyparser module interprets the query in a way that displays data that is NOT the data that you specify in the query.</p>
+    <p>Proof of concept:<br/>First, put a vehicle in there with<br/><pre>curl --data "username=JANET" https://frozen-refuge-94340.herokuapp.com/submit</pre><br/>
+    Then retrieve them using query 'username[$ne]=': <br/><pre>Visit the page at <a href="https://frozen-refuge-94340.herokuapp.com/vehicle.json?username[$ne]=">https://frozen-refuge-94340.herokuapp.com/vehicle.json?username[$ne]=</a></pre></p>
+    <br/>
+    <p>Resolution?<br/>Make sure parameters are as expected.</p>
+    <h4>Database injection</h4>
+    <h5>High risk</h5>
+    <p>I was able to inject malicious code into the database, creating annoying popups on the / page, effectively denying users access to the site. It was alarming how easy it was to deny users service to the site - all it takes is basic knowledge of Javascript and cURL.</p>
+    <p>I discovered the problem after attempting to throw in some Javascript functions in the database, then forcing the app to retrieve the malicious code from the database to display it on the / page. After I noticed it worked, I threw it into an infinite loop - as a result, the page never properly loads, effectively denying access to users.</p>
+    <p>Proof of concept:<br/>First, use cURL to inject:<br/><img src="curl-database-inject.png" alt="Screenshot of cURL injection" width=500px/><br />Then visit https://frozen-refuge-94340.herokuapp.com/</p>
+    <p>Resolution?<br/>Sanitize all user input: strip away special characters before storing it anywhere.</p>
+    
+    <h4>Node application error</h4>
+    <h5>Medium risk</h5>
+    <p>In the GET /vehicle.json route, there were multiple calls to send an HTTP response for one request. Node.js does not like this. This risk is dangerous because an attacker could easily take down the server with a typo (as I did). However, user data does not seem to be compromised.</p>
+    <p>I actually accidentally stumbled upon this problem: I meant to visit https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=JANET but accidentally forgot the query parameter, instead visiting <a href="https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=">https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=</a> .</p>
+    <p>Proof of concept:<br/>Visit <a href="https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=">https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=</a> like I accidentally did. Should cause a Heroku application error.</p>
+    <p>Resolution?<br/>Save the response in a local variable; send it at the last possible minute.</p>
+    <img src="vehicle-json-response.png" alt="GET /vehicle.json route calls response.send multiple times" width=500px>
+    <img src="vehicle-json-response-fix.png" alt="Remove multiple calls to response.send" width=500px>
+
+    <h3>Future recommendations</h3>
+    <p>Sanitize user input. Make sure that the parameters given were the ones expected. Test corner cases locally.</p>
+    
+    <h3>References</h3>
+    <p><a href="http://stackoverflow.com/questions/38365084/error-cant-set-headers-after-they-are-sent-express-js">http://stackoverflow.com/questions/38365084/error-cant-set-headers-after-they-are-sent-express-js</a></p>
+    <p><a href="http://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html">http://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html</a></p>
+    <p><a href="https://media.blackhat.com/bh-us-11/Sullivan/BH_US_11_Sullivan_Server_Side_WP.pdf">https://media.blackhat.com/bh-us-11/Sullivan/BH_US_11_Sullivan_Server_Side_WP.pdf</a></p>
+
+</body>
+</html>

