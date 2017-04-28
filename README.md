@@ -1,4 +1,4 @@
-#Repository for Michelle Luo (mluo02) for Comp20
+# Repository for Michelle Luo (mluo02) for Comp20
 This repository is a collection of assignments for Comp 20 at Tufts University.
 My favorite assignment of this semester was probably working on the server for "Not Uber" - the Black Car Service.
 
@@ -6,6 +6,7 @@ I've grown a lot in taking this course: because web is so pervasive these days, 
 
 One of the most important things I've learned in this course isn't necessarily strictly related to the assignments and labs--after working with the Spotify API (for the semester project) and the Twitter API (which I explored for another class), I learned to read documentation in a much quicker and more efficient manner. Basically, I learned how to ask the people around me (friends, professors, TAs, the Internet, Stack Overflow) for help in furthering my learning: my friends and I learned a lot from each other when working on the semester project. 
 While doing assignment 4, I read a lot of interesting articles about XSS attacks and database injection and just how common they are. I'm glad I learned about these topics a little bit in this course, but I wish that they were also briefly discussed in the intro level CS courses here.
+Git and Github are also really useful: I'm using them in my other classes, and I think I would be really overwhelmed if I hadn't been introduced to it in 20.
 
 Finally, I also learned what this glorious response I got last week means:
 ![alt text](rate_limit.png "Rate limiting by Stack Overflow")
